@@ -35,19 +35,17 @@ def extract_iocs(text):
 
 
 if __name__ == "__main__":
+    
+    from pathlib import Path
 
-    sample = """
-    User connected to 192.168.1.25
+    project_root = Path(__file__).resolve().parents[1]
+    log_path = project_root / "logs" / "sample_sysmon.log"
 
-    Contacted https://malicious-example.com
-
-    Hash:
-    d41d8cd98f00b204e9800998ecf8427e
-    """
+    sample = log_path.read_text(encoding="utf-8")
 
     results = extract_iocs(sample)
 
     for key, value in results.items():
-        print(f"{key}:")
+        print(key + ":")
         for item in value:
-            print("  -", item)
+            print(" -", item)
