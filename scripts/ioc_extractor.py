@@ -32,7 +32,44 @@ def extract_iocs(text):
         "SHA256": sha256,
         "MD5": md5,
     }
+def calculate_priority(results):
+    total_iocs = 0
 
+    for items in results.values():
+        total_iocs += len(set(items))
+
+    if total_iocs == 0:
+        return "LOW"
+    elif total_iocs <= 3:
+        return "MEDIUM"
+    else:
+        return "HIGH"
+    
+def generate_report(results):
+    print("=" * 40)
+    print("SOC Investigation Report")
+    print("=" * 40)
+
+    priority = calculate_priority(results)
+    print(f"Investigation Priority: {priority}")
+
+    print("\nIOC Statistics")
+    print("-" * 40)
+
+    for category, items in results.items():
+        unique_items = set(items)
+        print(f"{category}: {len(unique_items)}")
+
+    for category, items in results.items():
+        print(f"\n{category}:")
+
+        unique_items = sorted(set(items))
+
+        if unique_items:
+            for item in unique_items:
+                print(f" - {item}")
+        else:
+            print(" - None found")
 
 if __name__ == "__main__":
     
@@ -45,7 +82,4 @@ if __name__ == "__main__":
 
     results = extract_iocs(sample)
 
-    for key, value in results.items():
-        print(key + ":")
-        for item in value:
-            print(" -", item)
+    generate_report(results)
